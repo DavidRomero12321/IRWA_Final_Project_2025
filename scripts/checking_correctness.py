@@ -7,7 +7,7 @@ df_val = pd.read_csv("data/raw/validation_labels.csv")
 print("Cleaned:", df_clean.shape)
 print("Validation:", df_val.shape)
 
-# Check if all validation PIDs exist in your cleaned data
+# Check if all validation PIDs exist in the cleaned data
 missing = set(df_val['pid']) - set(df_clean['pid'])
 print(f"Missing pids in cleaned file: {len(missing)}")
 
