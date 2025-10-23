@@ -13,7 +13,7 @@ import pathlib
 import pandas as pd
 
 # use the tokenizer from our module
-from myapp.search.tokenize import build_terms
+from project_progress.part_1.text_tokenize import build_terms
 
 # ---------- Helpers (single-responsibility) ----------
 
