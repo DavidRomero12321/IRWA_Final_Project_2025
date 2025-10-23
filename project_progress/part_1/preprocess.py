@@ -13,7 +13,7 @@ import pathlib
 import pandas as pd
 
 # use the tokenizer from our module
-from project_progress.part_1.text_tokenize import build_terms
+from text_tokenize import build_terms
 
 # ---------- Helpers (single-responsibility) ----------
 
@@ -90,11 +90,23 @@ def _details_tokens(lst):
 
 def preprocess_row(doc: dict) -> dict:
     """
-    Purpose: transform one raw product dict into a normalized, tokenized record.
-    Output schema covers required display fields, facets, tokens, and numerics.
+    Transform one raw product dict into a normalized, tokenized record.
+    Keeps single-letter or special-character brand names (e.g., H&M, X, U.S. Polo).
     """
+
     title = doc.get("title", "")
     desc = doc.get("description", "")
+
+    # Brand: preserve short identifiers and ampersands (H&M etc.)
+    brand_raw = doc.get("brand", "")
+    if isinstance(brand_raw, str):
+        brand = unicodedata.normalize("NFKC", brand_raw).lower().strip()
+        # fill in missing or empty brand names
+        if brand == "":
+            brand = "unknown"
+    else:
+        brand = "unknown"
+    
 
     return {
         # identifiers
@@ -103,12 +115,12 @@ def preprocess_row(doc: dict) -> dict:
         # raw fields for display/UI
         "title_raw": title,
         "description_raw": desc,
-        "product_details_raw": doc.get("product_details", {}),  # keep original
+        "product_details_raw": doc.get("product_details", {}),
         "discount_raw": doc.get("discount"),
         "url": doc.get("url", ""),
 
-        # normalized facets (kept as separate fields for precision)
-        "brand": _norm(doc.get("brand", "")),
+        # normalized facets (kept separate for precision)
+        "brand": brand,  # ← less aggressive cleaning
         "category": _norm(doc.get("category", "")),
         "sub_category": _norm(doc.get("sub_category", "")),
         "seller": _norm(doc.get("seller", "")),
@@ -118,7 +130,7 @@ def preprocess_row(doc: dict) -> dict:
         "desc_tokens": build_terms(desc),
         "details_tokens": _details_tokens(doc.get("product_details", [])),
 
-        # numeric/boolean metadata (used for filters/boosts, not text index)
+        # numeric / boolean metadata
         "out_of_stock": bool(doc.get("out_of_stock", False)),
         "selling_price": _num(doc.get("selling_price")),
         "actual_price": _num(doc.get("actual_price")),
