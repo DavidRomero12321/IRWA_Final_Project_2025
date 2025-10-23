@@ -1,6 +1,6 @@
 import pandas as pd
 
-# load your cleaned dataset and the validation file
+# load the cleaned dataset and the validation file
 df_clean = pd.read_parquet("data/processed/products_clean.parquet")
 df_val = pd.read_csv("data/raw/validation_labels.csv")
 
