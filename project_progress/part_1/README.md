@@ -1,25 +1,35 @@
 ## Part 1 – Preprocessing + EDA
 
 ### Data
-Place raw files locally (not pushed to git):
+Place raw files locally:
 - data/raw/fashion_products_dataset.json
 - data/raw/validation_labels.csv
 
 ### Run preprocessing
-python scripts/prepare_part1.py --in data/raw/fashion_products_dataset.json --out data/processed/products_clean.parquet
+python project_progress/part_1/prepare_part1.py --in data/raw/fashion_products_dataset.json --out data/processed/products_clean.parquet
+# This script performs: 
+# Lowercasing, punctuation removal, tokenization, stopword removal, and stemming (using NLTK).
+# Cleaning and normalization of categorical and numeric fields.
+# Preservation of short brand names (e.g., “H&M”, “X”) and replacement of missing ones with "unknown".
+# Output saved as a clean Parquet file for later indexing and ranking.
 
-### (Optional) Validate
-python scripts/checking_correctness.py
+### Validate
+python project_progress/part_1/checking_correctness.py
 # Expected: 28,080 rows, 0 missing PIDs vs validation_labels.csv
 
 ### Run EDA
-python scripts/eda_part1.py
+python project_progress/part_1/eda_part1.py
+# Generates summary statistics and visualizations of the processed dataset: Distribution of prices, discounts, ratings; Description and title length histograms; top brands and categories; Top tokens and vocabulary size; Word cloud of most frequent terms
 
 ### Outputs
 - data/processed/products_clean.parquet
-- project_progress/part_1/fig_price_hist.png
-- project_progress/part_1/fig_discount_hist.png
-- project_progress/part_1/fig_rating_hist.png
-- project_progress/part_1/top_brands.csv
-- project_progress/part_1/top_terms_title.csv
-- project_progress/part_1/summary.json
+- fig_price_hist.png 
+- fig_discount_hist.png
+- fig_rating_hist.png
+- fig_top_brands.png 
+- fig_wordcloud_titles.png
+
+### Notes
+# Missing or blank brand names are labeled as "unknown"
+# Outlier prices and invalid numerical entries are handled during conversion to floats
+# Output saved as a clean Parquet file for later indexing and ranking
